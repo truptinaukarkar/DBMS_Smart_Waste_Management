@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tab {
+  @apply px-4 py-2 rounded-lg bg-white border;
+}
+.tab.active {
+  @apply bg-green-600 text-white;
+}
