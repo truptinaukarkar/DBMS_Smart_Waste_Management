@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
   const [role, setRole] = useState("Student");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
   const switchRole = (newRole) => {
     setRole(newRole);
+    setName("");
     setEmail("");
     setPassword("");
     setErrors({});
@@ -40,21 +41,22 @@ export default function Login() {
     if (!validate()) return;
 
     localStorage.setItem("role", role);
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
 
     const rolePath = role === "Cleaner" ? "/cleaner" : "/student";
     navigate(rolePath, { replace: true });
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-green-100 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
 
       {/* Logo */}
       <div className="mb-6 flex flex-col items-center">
-        <img src={logo} alt="Smart Waste Monitor" className="w-16 h-16 mb-4" />
-        <h1 className="text-3xl font-bold text-green-800">
+        <h1 className="text-3xl font-bold text-gray-900">
           Smart Waste Monitor
         </h1>
-        <p className="text-green-700 mt-1">
+        <p className="text-gray-600 mt-1">
           Real-time campus waste management
         </p>
       </div>
@@ -86,6 +88,18 @@ export default function Login() {
               {r}
             </button>
           ))}
+        </div>
+
+        {/* Name */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Full Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your full name"
+            className="w-full px-4 py-3 rounded-xl bg-gray-100 outline-none border border-transparent focus:ring-2 focus:ring-teal-500"
+          />
         </div>
 
         {/* Email */}
@@ -135,7 +149,7 @@ export default function Login() {
         {/* Login Button */}
         <button
           type="submit"
-          className="w-full bg-green-700 text-white py-3 rounded-xl font-semibold text-lg hover:bg-green-800 transition"
+          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
         >
           Login as {role}
         </button>
@@ -143,7 +157,7 @@ export default function Login() {
         {role === "Student" && (
           <p className="text-center mt-6 text-gray-500">
             Don’t have an account?{" "}
-            <Link to="/register" className="text-green-700 font-medium">
+            <Link to="/register" className="text-teal-600 font-medium">
               Register here
             </Link>
           </p>

@@ -2,14 +2,17 @@ import { NavLink, Outlet } from "react-router-dom";
 import Header from "../components/Header";
 
 export default function CleanerLayout() {
+  const userName = localStorage.getItem("userName") || "Mohan Singh";
+  const userEmail = localStorage.getItem("userEmail") || "";
+
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header
         title="Smart Waste Monitor"
         subtitle="Cleaner Portal"
-        color="blue"
-        userName="Mohan Singh"
-        userEmail="Academic Block"
+        color="teal"
+        userName={userName}
+        userEmail={userEmail}
       />
 
       {/* Tabs */}

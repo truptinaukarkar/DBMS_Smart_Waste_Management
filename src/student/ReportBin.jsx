@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CampusMap from "../components/CampusMap";
 
 export default function ReportBin() {
+    const navigate = useNavigate();
     const [department, setDepartment] = useState("");
     const [bin, setBin] = useState("");
     const [fill, setFill] = useState(50);
@@ -21,6 +23,36 @@ export default function ReportBin() {
     };
 
     const severity = getSeverity();
+
+    const handleSubmit = () => {
+        const newReport = {
+            id: `RPT${Date.now()}`,
+            department,
+            bin,
+            location: location ? `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}` : "Unknown",
+            fillLevel: fill,
+            status: "pending",
+            submittedAt: new Date().toLocaleString('en-US', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            }),
+            resolvedAt: null,
+            photos: {
+                top: photos.top ? URL.createObjectURL(photos.top) : null,
+                side: photos.side ? URL.createObjectURL(photos.side) : null
+            }
+        };
+
+        const existingReports = JSON.parse(localStorage.getItem('wasteReports') || '[]');
+        existingReports.unshift(newReport);
+        localStorage.setItem('wasteReports', JSON.stringify(existingReports));
+
+        navigate('/student/reports');
+    };
 
     return (
         <div className="bg-white rounded-2xl p-6 shadow space-y-8">
@@ -185,6 +217,7 @@ export default function ReportBin() {
 
             {/* Submit */}
             <button
+                onClick={handleSubmit}
                 disabled={
                     !photos.top ||
                     !photos.side ||
@@ -192,7 +225,7 @@ export default function ReportBin() {
                     !bin ||
                     !location
                 }
-                className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold text-lg disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg disabled:opacity-50 hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
             >
                 Submit Report
             </button>

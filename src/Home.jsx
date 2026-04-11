@@ -1,250 +1,281 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "./assets/logo.png";
 
 export default function Home() {
   const [selectedRole, setSelectedRole] = useState("Student");
   const [showDetails, setShowDetails] = useState(false);
-  const [activeFeature, setActiveFeature] = useState("Smart Reporting");
 
-  const palette = {
-    mint: "#4dcb9b",
-    softMint: "#abe5da",
-    teal: "#068484",
-    olive: "#7aa353",
-    lightCyan: "#a5ceca",
-    slate: "#425252",
+  const colors = {
+    primary: "#0f766e",      // Deep teal
+    secondary: "#14b8a6",    // Teal
+    accent: "#22c55e",       // Emerald green
+    light: "#5eead4",        // Light teal
+    dark: "#134e4a",         // Dark teal
+    gray: "#64748b",         // Slate gray
+    lightGray: "#f8fafc",    // Light slate
+    warning: "#f59e0b",      // Amber
+    danger: "#ef4444",       // Red
   };
+
+  const stats = [
+    { number: "15", label: "Active Zones", icon: "Z" },
+    { number: "120+", label: "Bins Monitored", icon: "B" },
+    { number: "93%", label: "Reports Resolved", icon: "R" },
+    { number: "<30min", label: "Avg Response", icon: "T" },
+  ];
 
   const roleContent = {
     Student: {
       title: "Student Portal",
-      points: [
-        "Report overflowing bins with top and side images",
-        "Select exact location from the campus map",
-        "Track report history and contribution impact",
-        "Receive notifications on report status",
-        "Earn points for active participation",
-        "View campus cleanliness statistics",
+      subtitle: "Report & Track",
+      features: [
+        "Upload bin photos with location tagging",
+        "Track your report history and impact",
+        "Earn rewards for active participation",
+        "Real-time status notifications",
+        "Campus cleanliness insights",
+        "Contribute to sustainable campus",
       ],
-      color: "green",
+      gradient: "from-green-400 to-emerald-600",
+      bgColor: "bg-green-50",
     },
     Cleaner: {
       title: "Cleaner Portal",
-      points: [
-        "View and accept assigned cleaning tasks",
-        "Use map view to locate task spots quickly",
-        "Follow schedule and submit completion proof",
-        "Update task status in real-time",
-        "Access cleaning guidelines and tips",
-        "Communicate with supervisors directly",
+      subtitle: "Manage & Resolve",
+      features: [
+        "View assigned cleaning tasks",
+        "Interactive map for navigation",
+        "Upload completion proof",
+        "Real-time task updates",
+        "Schedule management",
+        "Performance tracking",
       ],
-      color: "blue",
+      gradient: "from-blue-400 to-cyan-600",
+      bgColor: "bg-blue-50",
     },
   };
 
   const features = [
     {
+      icon: "R",
       title: "Smart Reporting",
-      desc: "Upload top and side images, pin exact location, and submit in seconds.",
-      metric: "2-photo evidence",
+      description: "Multi-photo evidence with precise GPS location tagging",
+      highlight: "2-photo proof system",
     },
     {
-      title: "Live Task Tracking",
-      desc: "Cleaner team gets location-first tasks and can close actions faster.",
-      metric: "< 30 min response",
+      icon: "T",
+      title: "Real-time Tracking",
+      description: "Live task assignment and status monitoring system",
+      highlight: "Instant task updates",
     },
     {
-      title: "Operational Insights",
-      desc: "Monitor campus zones and identify high-priority bin hotspots.",
-      metric: "93% reports resolved",
+      icon: "I",
+      title: "Intelligent Insights",
+      description: "AI-powered analytics for waste pattern recognition",
+      highlight: "Predictive analytics",
     },
   ];
 
   const currentRole = roleContent[selectedRole];
 
   return (
-    <div
-      className="min-h-screen px-4 py-10"
-      style={{
-        background: `linear-gradient(180deg, ${palette.softMint} 0%, #ffffff 45%, ${palette.lightCyan} 100%)`,
-      }}
-    >
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center justify-end">
-          <Link
-            to="/login"
-            className="px-5 py-2.5 rounded-xl text-white font-semibold transition hover:scale-105"
-            style={{ backgroundColor: palette.teal }}
-          >
-            Login
-          </Link>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <span className="text-xl font-bold text-gray-900">Smart Waste Monitor</span>
+            </div>
+            <Link
+              to="/login"
+              className="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-6 py-2 rounded-lg font-medium hover:from-teal-700 hover:to-teal-800 transition-all duration-200 shadow-sm"
+            >
+              Login
+            </Link>
+          </div>
         </div>
+      </nav>
 
-        <section
-          className="rounded-3xl shadow-xl p-8 md:p-10 border"
-          style={{ backgroundColor: "#ffffff", borderColor: palette.lightCyan }}
-        >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-            <div className="max-w-2xl">
-              <img src={logo} alt="Smart Waste Monitor" className="w-16 h-16 mb-4" />
-              <h1 className="text-3xl md:text-4xl font-bold" style={{ color: palette.slate }}>
-                Smart Waste Monitor
-              </h1>
-              <p className="mt-3" style={{ color: palette.slate }}>
-                An intelligent campus cleanliness platform where students can report
-                bin status and cleaners can track and resolve tasks in real time.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                  Campus Waste
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                    Management
+                  </span>
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                  Transform your campus into a cleaner, smarter environment with our intelligent waste monitoring platform. Real-time reporting and efficient task management.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/register"
-                  className="px-6 py-3 rounded-xl font-semibold transition hover:scale-105"
-                  style={{ backgroundColor: palette.mint, color: "#083b3b" }}
+                  className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-teal-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                  Register
+                  Get Started
                 </Link>
                 <Link
                   to="/login"
-                  className="px-6 py-3 rounded-xl font-semibold border transition hover:bg-white"
-                  style={{ color: palette.teal, borderColor: palette.teal }}
+                  className="border-2 border-teal-600 text-teal-600 px-8 py-4 rounded-xl font-semibold hover:bg-teal-50 transition-all duration-200"
                 >
                   Explore Platform
                 </Link>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 w-full md:max-w-sm">
-              {[
-                ["Active Zones", "15"],
-                ["Bins Monitored", "120+"],
-                ["Reports Resolved", "93%"],
-                ["Avg Response", "< 30 min"],
-              ].map(([label, value]) => (
+            <div className="grid grid-cols-2 gap-6">
+              {stats.map((stat, index) => (
                 <div
-                  key={label}
-                  className="rounded-2xl border p-4 hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
-                  style={{ borderColor: palette.softMint, backgroundColor: "#f8fffd" }}
+                  key={index}
+                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
                 >
-                  <p className="text-2xl font-bold" style={{ color: palette.teal }}>
-                    {value}
-                  </p>
-                  <p className="text-sm" style={{ color: palette.slate }}>{label}</p>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                      {stat.icon}
+                    </div>
+                    <span className="text-3xl font-bold text-gray-900">{stat.number}</span>
+                  </div>
+                  <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section
-          className="rounded-3xl shadow p-6 md:p-8 border"
-          style={{ backgroundColor: "#ffffff", borderColor: palette.lightCyan }}
-        >
-          <h2 className="text-2xl font-semibold mb-2">Explore by Role</h2>
-          <p className="mb-5" style={{ color: palette.slate }}>
-            Switch between roles to preview what each user can do.
-          </p>
+      {/* Role Selection */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Role</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Experience the platform from different perspectives tailored to your needs
+            </p>
+          </div>
 
-          <div
-            className="flex rounded-full p-1 w-full max-w-xs mb-6"
-            style={{ backgroundColor: palette.softMint }}
-          >
-            {["Student", "Cleaner"].map((role) => (
-              <button
-                type="button"
-                key={role}
-                onClick={() => setSelectedRole(role)}
-                className="flex-1 py-2 rounded-full text-sm font-medium transition"
-                style={{
-                  backgroundColor: selectedRole === role ? "#ffffff" : "transparent",
-                  color: selectedRole === role ? palette.slate : palette.teal,
-                }}
+          <div className="flex justify-center mb-12">
+            <div className="bg-gray-100 p-1 rounded-xl flex">
+              {["Student", "Cleaner"].map((role) => (
+                <button
+                  key={role}
+                  onClick={() => setSelectedRole(role)}
+                  className={`px-8 py-3 rounded-lg font-medium transition-all duration-200 ${
+                    selectedRole === role
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  {role}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className={`${currentRole.bgColor} rounded-3xl p-8 lg:p-12 border border-gray-100`}>
+              <div className="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className={`inline-flex px-4 py-2 rounded-full text-sm font-medium text-white bg-gradient-to-r ${currentRole.gradient} mb-4`}>
+                    {currentRole.subtitle}
+                  </div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-6">{currentRole.title}</h3>
+                  <div className="space-y-3">
+                    {currentRole.features
+                      .slice(0, showDetails ? currentRole.features.length : 4)
+                      .map((feature, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <div className={`w-6 h-6 rounded-full bg-gradient-to-r ${currentRole.gradient} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                            <span className="text-white text-xs">+</span>
+                          </div>
+                          <p className="text-gray-700">{feature}</p>
+                        </div>
+                      ))}
+                  </div>
+                  {currentRole.features.length > 4 && (
+                    <button
+                      onClick={() => setShowDetails(!showDetails)}
+                      className={`mt-6 text-teal-600 font-medium hover:text-teal-700 transition-colors duration-200`}
+                    >
+                      {showDetails ? "Show less" : "Show more features"}
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <div className={`w-full h-64 bg-gradient-to-br ${currentRole.gradient} rounded-2xl opacity-10`}></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className={`w-32 h-32 bg-gradient-to-br ${currentRole.gradient} rounded-2xl flex items-center justify-center text-white text-4xl font-bold shadow-xl`}>
+                      {selectedRole[0]}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Platform Features</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Cutting-edge technology for efficient waste management
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
               >
-                {role}
-              </button>
+                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mb-6">
+                  {feature.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                <p className="text-gray-600 mb-4">{feature.description}</p>
+                <div className="inline-flex px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-medium">
+                  {feature.highlight}
+                </div>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div
-            className="rounded-2xl p-6 border"
-            style={{
-              backgroundColor: currentRole.color === "green" ? "#eefbf5" : "#ecf9f7",
-              borderColor: currentRole.color === "green" ? palette.mint : palette.lightCyan,
-            }}
-          >
-            <h3 className="text-xl font-semibold mb-3">{currentRole.title}</h3>
-            <div className="space-y-2">
-              {currentRole.points
-                .slice(0, showDetails ? currentRole.points.length : 3)
-                .map((point) => (
-                  <p key={point} style={{ color: palette.slate }}>
-                    - {point}
-                  </p>
-                ))}
-            </div>
-            <button
-              onClick={() => setShowDetails(!showDetails)}
-              className="mt-4 px-4 py-2 rounded-lg font-medium transition hover:opacity-90"
-              style={{
-                backgroundColor: currentRole.color === "green" ? palette.olive : palette.teal,
-                color: "#ffffff",
-              }}
-            >
-              {showDetails ? "Show Less" : "Show More"}
-            </button>
-          </div>
-        </section>
-
-        <section className="grid md:grid-cols-3 gap-4">
-          {features.map((card) => (
-            <div
-              key={card.title}
-              className="rounded-2xl shadow p-6 border transition cursor-pointer hover:-translate-y-1"
-              style={{
-                backgroundColor: activeFeature === card.title ? "#f3fffb" : "#ffffff",
-                borderColor: activeFeature === card.title ? palette.mint : palette.softMint,
-              }}
-              onMouseEnter={() => setActiveFeature(card.title)}
-            >
-              <h3 className="font-semibold text-lg" style={{ color: palette.slate }}>{card.title}</h3>
-              <p className="mt-2 text-sm" style={{ color: palette.slate }}>{card.desc}</p>
-              <p className="mt-3 text-xs font-semibold" style={{ color: palette.teal }}>
-                {card.metric}
-              </p>
-            </div>
-          ))}
-        </section>
-
-        <section
-          className="text-white rounded-3xl p-8 md:p-10 text-center"
-          style={{
-            background: `linear-gradient(135deg, ${palette.teal} 0%, ${palette.slate} 100%)`,
-          }}
-        >
-          <h2 className="text-2xl md:text-3xl font-bold">
-            Keep the campus cleaner, together
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-br from-teal-600 to-emerald-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+            Start Making a Difference Today
           </h2>
-          <p className="mt-2" style={{ color: palette.softMint }}>
-            Start reporting and resolving waste issues faster with one connected platform.
+          <p className="text-xl text-teal-50 max-w-2xl mx-auto mb-8">
+            Join hundreds of students and cleaners already using our platform to create a cleaner, more sustainable campus environment.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3 justify-center">
-            <Link
-              to="/login"
-              className="px-6 py-3 rounded-xl text-white font-semibold transition hover:scale-105"
-              style={{ backgroundColor: palette.olive }}
-            >
-              Get Started
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
-              className="px-6 py-3 rounded-xl border font-semibold transition hover:bg-white hover:text-black"
-              style={{ borderColor: palette.softMint, color: palette.softMint }}
+              className="bg-white text-teal-700 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200 shadow-lg"
             >
-              Create Student Account
+              Create Account
+            </Link>
+            <Link
+              to="/login"
+              className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-teal-700 transition-all duration-200"
+            >
+              Login Now
             </Link>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

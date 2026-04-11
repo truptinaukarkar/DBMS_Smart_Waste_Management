@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -51,12 +50,11 @@ export default function Register() {
 
       {/* Logo */}
       <div className="mb-6 flex flex-col items-center">
-        <img src={logo} alt="Smart Waste Monitor" className="w-16 h-16 mb-4" />
         <h1 className="text-3xl font-bold text-green-800">
           Smart Waste Monitor
         </h1>
         <p className="text-green-700 mt-1">
-          Student Registration
+          Create your student account
         </p>
       </div>
 
@@ -131,7 +129,7 @@ export default function Register() {
         {/* Register Button */}
         <button
           type="submit"
-          className="w-full bg-green-700 text-white py-3 rounded-xl font-semibold text-lg hover:bg-green-800 transition"
+          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
         >
           Register as Student
         </button>
@@ -139,7 +137,7 @@ export default function Register() {
         {/* Back to login */}
         <p className="text-center mt-6 text-gray-500">
           Already have an account?{" "}
-          <Link to="/login" className="text-green-700 font-medium">
+          <Link to="/login" className="text-teal-600 font-medium">
             Login here
           </Link>
         </p>

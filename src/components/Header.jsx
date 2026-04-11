@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
 
 
 export default function Header({
@@ -12,7 +11,8 @@ export default function Header({
     const navigate = useNavigate();
 
   const colorMap = {
-    green: "text-green-700",
+    emerald: "text-emerald-700",
+    teal: "text-teal-700",
     blue: "text-blue-700",
     purple: "text-purple-700",
   };
@@ -24,9 +24,8 @@ export default function Header({
 
   return (
     <header className="bg-white border-b px-6 py-4 flex justify-between items-center">
-      {/* LEFT: Logo + App Info */}
-      <div className="flex items-center gap-3">
-        <img src={logo} alt="Smart Waste Monitor" className="h-10 w-10" />
+      {/* LEFT: App Info */}
+      <div className="flex items-center">
         <div>
           <h1 className={`text-lg font-semibold ${colorMap[color]}`}>
             {title}

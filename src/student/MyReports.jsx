@@ -1,46 +1,12 @@
+import { useState, useEffect } from "react";
+
 export default function MyReports() {
-  const reports = [
-    {
-      id: "RPT001",
-      department: "CS & IT DEPARTMENT",
-      bin: "Bin 3",
-      location: "Near Library Entrance",
-      fillLevel: 85,
-      status: "resolved",
-      submittedAt: "2024-04-10 09:30 AM",
-      resolvedAt: "2024-04-10 10:15 AM"
-    },
-    {
-      id: "RPT002", 
-      department: "ELECTRICAL DEPARTMENT",
-      bin: "Bin 1",
-      location: "Lab Building Corridor",
-      fillLevel: 70,
-      status: "in-progress",
-      submittedAt: "2024-04-11 02:45 PM",
-      resolvedAt: null
-    },
-    {
-      id: "RPT003",
-      department: "Canteen Area", 
-      bin: "Bin 5",
-      location: "Food Court Entrance",
-      fillLevel: 95,
-      status: "pending",
-      submittedAt: "2024-04-11 03:20 PM",
-      resolvedAt: null
-    },
-    {
-      id: "RPT004",
-      department: "MECHANICAL DEPARTMENT",
-      bin: "Bin 2", 
-      location: "Workshop Area",
-      fillLevel: 60,
-      status: "resolved",
-      submittedAt: "2024-04-09 11:00 AM",
-      resolvedAt: "2024-04-09 11:45 AM"
-    }
-  ];
+  const [reports, setReports] = useState([]);
+
+  useEffect(() => {
+    const storedReports = JSON.parse(localStorage.getItem('wasteReports') || '[]');
+    setReports(storedReports);
+  }, []);
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -65,7 +31,13 @@ export default function MyReports() {
       </p>
 
       <div className="space-y-4">
-        {reports.map((report) => (
+        {reports.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">No reports submitted yet</p>
+            <p className="text-gray-400 text-sm mt-2">Your submitted reports will appear here</p>
+          </div>
+        ) : (
+          reports.map((report) => (
           <div key={report.id} className="border rounded-xl p-4 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-3">
               <div>
@@ -98,6 +70,30 @@ export default function MyReports() {
               </div>
             </div>
 
+            {report.photos && (report.photos.top || report.photos.side) && (
+              <div className="mt-3 pt-3 border-t">
+                <p className="text-sm text-gray-500 mb-2">Photos:</p>
+                <div className="flex gap-2">
+                  {report.photos.top && (
+                    <img 
+                      src={report.photos.top} 
+                      alt="Top view" 
+                      className="w-20 h-20 object-cover rounded-lg border cursor-pointer hover:scale-105 transition"
+                      onClick={() => window.open(report.photos.top, '_blank')}
+                    />
+                  )}
+                  {report.photos.side && (
+                    <img 
+                      src={report.photos.side} 
+                      alt="Side view" 
+                      className="w-20 h-20 object-cover rounded-lg border cursor-pointer hover:scale-105 transition"
+                      onClick={() => window.open(report.photos.side, '_blank')}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
             {report.resolvedAt && (
               <div className="mt-3 pt-3 border-t text-sm">
                 <span className="text-gray-500">Resolved at:</span>
@@ -105,7 +101,7 @@ export default function MyReports() {
               </div>
             )}
           </div>
-        ))}
+        )))}
       </div>
     </div>
   );

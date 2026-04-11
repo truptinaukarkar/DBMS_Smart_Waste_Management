@@ -2,14 +2,17 @@ import { NavLink, Outlet } from "react-router-dom";
 import Header from "../components/Header";
 
 export default function StudentLayout() {
+  const userName = localStorage.getItem("userName") || "Rahul Kumar";
+  const userEmail = localStorage.getItem("userEmail") || "rahul@university.edu";
+
   return (
-    <div className="min-h-screen bg-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header
         title="Smart Waste Monitor"
         subtitle="Student Portal"
-        color="green"
-        userName="Rahul Kumar"
-        userEmail="rahul@university.edu"
+        color="emerald"
+        userName={userName}
+        userEmail={userEmail}
       />
 
       {/* Tabs */}
