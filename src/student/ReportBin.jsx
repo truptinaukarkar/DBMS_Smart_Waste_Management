@@ -28,54 +28,41 @@ export default function ReportBin() {
             <div>
                 <h2 className="text-lg font-semibold mb-4">Upload Bin Photos</h2>
 
-                {["1. Top View Photo", "2. Side View Photo"].map((label) => (
-                    <div key={label} className="mb-4">
+                {[
+                    { key: "top", label: "1. Top View Photo" },
+                    { key: "side", label: "2. Side View Photo" },
+                ].map(({ key, label }) => (
+                    <div key={key} className="mb-6">
                         <p className="font-medium mb-2">
                             {label} <span className="text-red-500">*</span>
                         </p>
-                        {/* Upload Section */}
-                        <div>
-                            <h2 className="text-lg font-semibold mb-4">Upload Bin Photos</h2>
 
-                            {[
-                                { key: "top", label: "Top View Photo" },
-                                { key: "side", label: "Side View Photo" },
-                            ].map(({ key, label }) => (
-                                <div key={key} className="mb-6">
-                                    <p className="font-medium mb-2">
-                                        {label} <span className="text-red-500">*</span>
-                                    </p>
+                        <label className="cursor-pointer block">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                capture="environment"
+                                className="hidden"
+                                onChange={(e) =>
+                                    setPhotos((prev) => ({
+                                        ...prev,
+                                        [key]: e.target.files[0],
+                                    }))
+                                }
+                            />
 
-                                    <label className="cursor-pointer block">
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            capture="environment"
-                                            className="hidden"
-                                            onChange={(e) =>
-                                                setPhotos((prev) => ({
-                                                    ...prev,
-                                                    [key]: e.target.files[0],
-                                                }))
-                                            }
-                                        />
-
-                                        <div className="h-36 border-2 border-dashed rounded-xl flex items-center justify-center text-gray-500 hover:border-green-500 transition">
-                                            {photos[key] ? (
-                                                <img
-                                                    src={URL.createObjectURL(photos[key])}
-                                                    alt={label}
-                                                    className="h-full object-contain rounded-lg"
-                                                />
-                                            ) : (
-                                                <span>Click to upload</span>
-                                            )}
-                                        </div>
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-
+                            <div className="h-36 border-2 border-dashed rounded-xl flex items-center justify-center text-gray-500 hover:border-green-500 transition">
+                                {photos[key] ? (
+                                    <img
+                                        src={URL.createObjectURL(photos[key])}
+                                        alt={label}
+                                        className="h-full object-contain rounded-lg"
+                                    />
+                                ) : (
+                                    <span>Click to upload</span>
+                                )}
+                            </div>
+                        </label>
                     </div>
                 ))}
             </div>
@@ -127,10 +114,14 @@ export default function ReportBin() {
                         className="w-full mt-2 p-3 border rounded-xl"
                     >
                         <option value="">Select a department</option>
-                        <option>Academic Block</option>
-                        <option>Hostel Area</option>
-                        <option>Canteen</option>
-                        <option>Admin Building</option>
+                        <option>CS & IT DEPARTMENT </option>
+                        <option>ELECTRICAL DEPARTMENT </option>
+                        <option>MECHANICAL DEPARTMENT</option>
+                        <option>CIVIL DEPARTMENT</option>
+                        <option>CHEMICAL DEPARTMENT</option>
+                        <option>PHYSICS DEPARTMENT</option>
+                        <option>MATHS DEPARTMENT</option>
+                        <option>Canteen Area</option>
                     </select>
                 </div>
 
@@ -149,6 +140,13 @@ export default function ReportBin() {
                         <option>Bin 1</option>
                         <option>Bin 2</option>
                         <option>Bin 3</option>
+                        <option>Bin 4</option>
+                        <option>Bin 5</option>
+                        <option>Bin 6</option>
+                        <option>Bin 7</option>
+                        <option>Bin 8</option>
+                        <option>Bin 9</option>
+                        <option>Bin 10</option>
                     </select>
                 </div>
 
@@ -180,7 +178,7 @@ export default function ReportBin() {
                     </div>
 
                     <p className="text-sm text-gray-500 mt-2">
-                        Drag the slider to estimate how full the dustbin is
+                        Drag slider to estimate how full the dustbin is
                     </p>
                 </div>
             </div>

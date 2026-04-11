@@ -11,26 +11,21 @@ export default function StudentHome() {
 
   return (
     <div className="space-y-6">
-      {/* Map Section */}
-      <div className="bg-white rounded-2xl p-6 shadow">
-        <h2 className="text-lg font-semibold">Campus Waste Map</h2>
-        <p className="text-gray-500 mb-4">
-          View all monitored waste bins across the campus
-        </p>
-
-        <CampusMap markers={bins} />
-      </div>
-
+      
       {/* Stats */}
       <div className="bg-white rounded-2xl p-6 shadow">
         <h2 className="text-lg font-semibold mb-4">Department Overview</h2>
 
         <div className="grid grid-cols-4 gap-4">
           {[
-            ["Academic Block", 4],
-            ["Hostel Area", 4],
-            ["Canteen", 3],
-            ["Admin Building", 3],
+            ["CS & IT DEPARTMENT", 4],
+            ["ELECTRICAL DEPARTMENT", 4],
+            ["CIVIL DEPARTMENT", 3],
+            ["MECHANICAL DEPARTMENT", 3],
+            ["CHEMICAL DEPARTMENT", 2],
+            ["PHYSICS DEPARTMENT", 2],
+            ["MATHS DEPARTMENT", 2],
+            ["Canteen Area", 2],
           ].map(([name, count]) => (
             <div
               key={name}
@@ -62,6 +57,15 @@ export default function StudentHome() {
             <p className="text-sm">Accuracy Rate</p>
           </div>
         </div>
+      </div>
+      {/* Map Section */}
+      <div className="bg-white rounded-2xl p-6 shadow">
+        <h2 className="text-lg font-semibold">Campus Waste Map</h2>
+        <p className="text-gray-500 mb-4">
+          View all monitored waste bins across the campus
+        </p>
+
+        <CampusMap markers={bins} />
       </div>
     </div>
   );

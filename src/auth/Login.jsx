@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [role, setRole] = useState("Student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +39,10 @@ export default function Login() {
     e.preventDefault();
     if (!validate()) return;
 
-    alert(`Logged in as ${role} (UI only)`);
+    localStorage.setItem("role", role);
+
+    const rolePath = role === "Cleaner" ? "/cleaner" : "/student";
+    navigate(rolePath, { replace: true });
   };
 
   return (
@@ -67,7 +72,7 @@ export default function Login() {
 
         {/* Role Selector */}
         <div className="flex bg-gray-100 rounded-full p-1 mb-6">
-          {["Student", "Cleaner", "Admin"].map((r) => (
+          {["Student", "Cleaner"].map((r) => (
             <button
               type="button"
               key={r}
@@ -95,7 +100,7 @@ export default function Login() {
                 ? "student@university.edu"
                 : role === "Cleaner"
                 ? "cleaner@clean.com"
-                : "admin@system.com"
+                : "user@example.com"
             }
             className={`w-full px-4 py-3 rounded-xl bg-gray-100 outline-none border
               ${errors.email ? "border-red-500" : "border-transparent"}
@@ -138,9 +143,9 @@ export default function Login() {
         {role === "Student" && (
           <p className="text-center mt-6 text-gray-500">
             Don’t have an account?{" "}
-            <a href="/register" className="text-green-700 font-medium">
+            <Link to="/register" className="text-green-700 font-medium">
               Register here
-            </a>
+            </Link>
           </p>
         )}
       </form>

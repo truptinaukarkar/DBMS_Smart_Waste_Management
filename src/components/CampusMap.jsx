@@ -29,6 +29,7 @@ function LocationSelector({ onSelect }) {
 export default function CampusMap({
   center = [19.076, 72.8777],
   zoom = 16,
+  markers = [],
   selectedLocation,
   onLocationSelect,
 }) {
@@ -54,7 +55,12 @@ export default function CampusMap({
         />
 
         {/* CLICK HANDLER */}
-        <LocationSelector onSelect={onLocationSelect} />
+        {onLocationSelect && <LocationSelector onSelect={onLocationSelect} />}
+
+        {/* STATIC MARKERS */}
+        {markers.map((marker, index) => (
+          <Marker key={`${marker.lat}-${marker.lng}-${index}`} position={[marker.lat, marker.lng]} />
+        ))}
 
         {/* SELECTED MARKER */}
         {selectedLocation && (

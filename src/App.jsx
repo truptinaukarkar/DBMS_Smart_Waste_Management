@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./Home";
 
 // Auth
 import Login from "./auth/Login";
@@ -16,21 +17,22 @@ import CleanerTasks from "./cleaner/CleanerTasks";
 import CleanerMap from "./cleaner/CleanerMap";
 import CleanerSchedule from "./cleaner/CleanerSchedule";
 
-// Admin
-import AdminLayout from "./admin/AdminLayout";
-import AdminOverview from "./admin/AdminOverview";
-import AdminBins from "./admin/AdminBins";
-import AdminCleaners from "./admin/AdminCleaners";
-import AdminAnalytics from "./admin/AdminAnalytics";
+function DashboardRedirect() {
+  const role = (localStorage.getItem("role") || "").toLowerCase();
 
+  if (role === "cleaner") return <Navigate to="/cleaner" replace />;
+  return <Navigate to="/student" replace />;
+}
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* ================= AUTH ================= */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<DashboardRedirect />} />
 
         {/* ================= STUDENT ================= */}
         <Route path="/student" element={<StudentLayout />}>
@@ -55,14 +57,6 @@ function App() {
             </div>
           }
         />
-
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminOverview />} />
-          <Route path="bins" element={<AdminBins />} />
-          <Route path="cleaners" element={<AdminCleaners />} />
-          <Route path="analytics" element={<AdminAnalytics />} />
-        </Route>
-
       </Routes>
     </BrowserRouter>
   );

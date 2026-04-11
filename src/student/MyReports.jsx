@@ -1,4 +1,62 @@
 export default function MyReports() {
+  const reports = [
+    {
+      id: "RPT001",
+      department: "CS & IT DEPARTMENT",
+      bin: "Bin 3",
+      location: "Near Library Entrance",
+      fillLevel: 85,
+      status: "resolved",
+      submittedAt: "2024-04-10 09:30 AM",
+      resolvedAt: "2024-04-10 10:15 AM"
+    },
+    {
+      id: "RPT002", 
+      department: "ELECTRICAL DEPARTMENT",
+      bin: "Bin 1",
+      location: "Lab Building Corridor",
+      fillLevel: 70,
+      status: "in-progress",
+      submittedAt: "2024-04-11 02:45 PM",
+      resolvedAt: null
+    },
+    {
+      id: "RPT003",
+      department: "Canteen Area", 
+      bin: "Bin 5",
+      location: "Food Court Entrance",
+      fillLevel: 95,
+      status: "pending",
+      submittedAt: "2024-04-11 03:20 PM",
+      resolvedAt: null
+    },
+    {
+      id: "RPT004",
+      department: "MECHANICAL DEPARTMENT",
+      bin: "Bin 2", 
+      location: "Workshop Area",
+      fillLevel: 60,
+      status: "resolved",
+      submittedAt: "2024-04-09 11:00 AM",
+      resolvedAt: "2024-04-09 11:45 AM"
+    }
+  ];
+
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'resolved': return 'bg-green-100 text-green-700';
+      case 'in-progress': return 'bg-blue-100 text-blue-700';
+      case 'pending': return 'bg-yellow-100 text-yellow-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const getFillLevelColor = (level) => {
+    if (level >= 80) return 'text-red-600';
+    if (level >= 60) return 'text-yellow-600';
+    return 'text-green-600';
+  };
+
   return (
     <div className="bg-white rounded-2xl p-6 shadow">
       <h2 className="text-lg font-semibold mb-2">My Recent Reports</h2>
@@ -6,8 +64,48 @@ export default function MyReports() {
         Track the status of your submissions
       </p>
 
-      <div className="h-40 flex items-center justify-center text-gray-500">
-        No reports submitted yet
+      <div className="space-y-4">
+        {reports.map((report) => (
+          <div key={report.id} className="border rounded-xl p-4 hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h3 className="font-semibold text-gray-900">Report #{report.id}</h3>
+                <p className="text-sm text-gray-500">{report.submittedAt}</p>
+              </div>
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>
+                {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div>
+                <span className="text-gray-500">Department:</span>
+                <span className="ml-2 font-medium">{report.department}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Bin:</span>
+                <span className="ml-2 font-medium">{report.bin}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Location:</span>
+                <span className="ml-2 font-medium">{report.location}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Fill Level:</span>
+                <span className={`ml-2 font-bold ${getFillLevelColor(report.fillLevel)}`}>
+                  {report.fillLevel}%
+                </span>
+              </div>
+            </div>
+
+            {report.resolvedAt && (
+              <div className="mt-3 pt-3 border-t text-sm">
+                <span className="text-gray-500">Resolved at:</span>
+                <span className="ml-2 text-green-600 font-medium">{report.resolvedAt}</span>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

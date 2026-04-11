@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -40,7 +42,8 @@ export default function Register() {
     e.preventDefault();
     if (!validate()) return;
 
-    alert("Student registered successfully (UI only)");
+    localStorage.setItem("role", "Student");
+    navigate("/student", { replace: true });
   };
 
   return (
@@ -136,9 +139,9 @@ export default function Register() {
         {/* Back to login */}
         <p className="text-center mt-6 text-gray-500">
           Already have an account?{" "}
-          <a href="/" className="text-green-700 font-medium">
+          <Link to="/login" className="text-green-700 font-medium">
             Login here
-          </a>
+          </Link>
         </p>
       </form>
     </div>
