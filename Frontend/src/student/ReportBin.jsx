@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api.js";
 
 export default function ReportBin() {
     const navigate = useNavigate();
     const [department, setDepartment] = useState("");
     const [bin, setBin] = useState("");
     const [fill, setFill] = useState(50);
-        const [photos, setPhotos] = useState({
+    const [photos, setPhotos] = useState({
         top: null,
         side: null,
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
 
     const getSeverity = () => {
@@ -22,37 +25,54 @@ export default function ReportBin() {
 
     const severity = getSeverity();
 
-    const handleSubmit = () => {
-        const newReport = {
-            id: `RPT${Date.now()}`,
-            department,
-            bin,
-            fillLevel: fill,
-            status: "pending",
-            submittedAt: new Date().toLocaleString('en-US', { 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-            }),
-            resolvedAt: null,
-            photos: {
-                top: photos.top ? URL.createObjectURL(photos.top) : null,
-                side: photos.side ? URL.createObjectURL(photos.side) : null
-            }
-        };
+    const handleSubmit = async () => {
+        if (!photos.top || !photos.side) {
+            setError('Both top and side photos are required');
+            return;
+        }
+
+        if (!department || !bin) {
+            setError('Department and bin location are required');
+            return;
+        }
+
+        setIsLoading(true);
+        setError("");
 
         try {
+            // Create FormData for file upload
+            const formData = new FormData();
+            formData.append('bin_id', bin);
+            formData.append('fill_level', fill);
+            formData.append('photo', photos.top);
+
+            const response = await api.createTask(formData);
+            
+            // Store additional metadata in localStorage for display
+            const reportData = {
+                ...response.task,
+                department,
+                binLocation: bin,
+                submittedAt: new Date().toLocaleString('en-US', { 
+                    year: 'numeric', 
+                    month: '2-digit', 
+                    day: '2-digit', 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: true 
+                })
+            };
+
             const existingReports = JSON.parse(localStorage.getItem('wasteReports') || '[]');
-            existingReports.unshift(newReport);
+            existingReports.unshift(reportData);
             localStorage.setItem('wasteReports', JSON.stringify(existingReports));
 
             navigate('/user/reports');
         } catch (error) {
-            console.error('Error saving report:', error);
-            alert('There was an error submitting your report. Please try again.');
+            console.error('Error submitting report:', error);
+            setError(error.message || 'There was an error submitting your report. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -188,6 +208,13 @@ export default function ReportBin() {
                 </div>
             </div>
 
+            {/* Error Display */}
+            {error && (
+                <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                    {error}
+                </div>
+            )}
+
             {/* Submit */}
             <button
                 type="submit"
@@ -196,11 +223,12 @@ export default function ReportBin() {
                     !photos.top ||
                     !photos.side ||
                     !department ||
-                    !bin
+                    !bin ||
+                    isLoading
                 }
                 className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg disabled:opacity-50 hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
             >
-                Submit Report
+                {isLoading ? 'Submitting...' : 'Submit Report'}
             </button>
 
         </div>

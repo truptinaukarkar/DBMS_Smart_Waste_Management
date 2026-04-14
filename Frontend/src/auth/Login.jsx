@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api.js";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [role, setRole] = useState("User");
+  const [role, setRole] = useState("user");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const switchRole = (newRole) => {
     setRole(newRole);
@@ -22,14 +24,14 @@ export default function Login() {
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (role === "User") {
+    } else if (role === "user") {
       // VJTI email validation for User role only
       const vjtiRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*vjti\.ac\.in$/;
       if (!vjtiRegex.test(email)) {
         newErrors.email = "Only VJTI emails are allowed (example@vjti.ac.in)";
       }
-    } else if (role === "Cleaner") {
-      // Basic email validation for Cleaner role
+    } else if (role === "worker") {
+      // Basic email validation for Worker role
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         newErrors.email = "Please enter a valid email address";
@@ -47,16 +49,26 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    localStorage.setItem("role", role);
-    localStorage.setItem("userName", name);
-    localStorage.setItem("userEmail", email);
+    setIsLoading(true);
+    try {
+      const response = await api.login(email, password);
+      
+      localStorage.setItem("role", response.user.role);
+      localStorage.setItem("userName", response.user.name);
+      localStorage.setItem("userEmail", response.user.email);
+      localStorage.setItem("userId", response.user.id);
 
-    const rolePath = role === "Cleaner" ? "/cleaner" : "/user";
-    navigate(rolePath, { replace: true });
+      const rolePath = response.user.role === "worker" ? "/cleaner" : "/user";
+      navigate(rolePath, { replace: true });
+    } catch (error) {
+      setErrors({ general: error.message || 'Login failed' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -84,21 +96,28 @@ export default function Login() {
 
         {/* Role Selector */}
         <div className="flex bg-gray-100 rounded-full p-1 mb-6">
-          {["User", "Cleaner"].map((r) => (
+          {["user", "worker"].map((r) => (
             <button
               type="button"
               key={r}
               onClick={() => switchRole(r)}
-              className={`flex-1 py-2 rounded-full text-sm font-medium transition
+              className={`flex-1 py-2 rounded-full text-sm font-medium transition capitalize
                 ${role === r
                   ? "bg-white shadow text-black"
                   : "text-gray-600"
                 }`}
             >
-              {r}
+              {r === "user" ? "User" : "Worker"}
             </button>
           ))}
         </div>
+
+        {/* General Error */}
+        {errors.general && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            {errors.general}
+          </div>
+        )}
 
         {/* Name */}
         <div className="mb-4">
@@ -120,10 +139,10 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={
-              role === "User"
+              role === "user"
                 ? "your.email@vjti.ac.in"
-                : role === "Cleaner"
-                ? "cleaner@clean.com"
+                : role === "worker"
+                ? "worker@company.com"
                 : "user@example.com"
             }
             className={`w-full px-4 py-3 rounded-xl bg-gray-100 outline-none border
@@ -159,14 +178,15 @@ export default function Login() {
         {/* Login Button */}
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
+          disabled={isLoading}
+          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Login as {role}
+          {isLoading ? 'Logging in...' : `Login as ${role === "user" ? "User" : "Worker"}`}
         </button>
 
-        {role === "User" && (
+        {role === "user" && (
           <p className="text-center mt-6 text-gray-500">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <Link to="/register" className="text-teal-600 font-medium">
               Register here
             </Link>

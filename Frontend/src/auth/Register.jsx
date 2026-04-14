@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api.js";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
@@ -38,12 +40,25 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    localStorage.setItem("role", "User");
-    navigate("/user", { replace: true });
+    setIsLoading(true);
+    try {
+      const response = await api.register(name, email, password, 'user');
+      
+      localStorage.setItem("role", response.user.role);
+      localStorage.setItem("userName", response.user.name);
+      localStorage.setItem("userEmail", response.user.email);
+      localStorage.setItem("userId", response.user.id);
+      
+      navigate("/user", { replace: true });
+    } catch (error) {
+      setErrors({ general: error.message || 'Registration failed' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -70,6 +85,13 @@ export default function Register() {
         <p className="text-gray-500 mb-6">
           Only VJTI students are allowed to register
         </p>
+
+        {/* Error Display */}
+        {errors.general && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            {errors.general}
+          </div>
+        )}
 
         {/* Name */}
         <div className="mb-4">
@@ -143,9 +165,10 @@ export default function Register() {
         {/* Register Button */}
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
+          disabled={isLoading}
+          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Register as User
+          {isLoading ? 'Registering...' : 'Register as User'}
         </button>
 
         {/* Back to login */}

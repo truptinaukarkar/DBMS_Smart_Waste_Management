@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "Test User",
+    "email": "user@it.vjti.ac.in",
+    "password": "$2b$10$WH1lyPwTO/4O5gVmlRwO/.ZwXnxzJgGIvey2zJdcgmYdgoYh/YRXa",
+    "role": "user",
+    "created_at": "2026-04-14T11:27:32.590Z"
+  },
+  {
+    "id": "2",
+    "name": "Test Worker",
+    "email": "worker@company.com",
+    "password": "$2b$10$WH1lyPwTO/4O5gVmlRwO/.ZwXnxzJgGIvey2zJdcgmYdgoYh/YRXa",
+    "role": "worker",
+    "created_at": "2026-04-14T11:27:32.699Z"
+  },
+  {
+    "id": "1776166492991-29a1ea1cdf3e9",
+    "name": "manya",
+    "email": "manya@it.vjti.ac.in",
+    "password": "$2b$10$4Wj9XCYizoNpyFxBjtz3ReLfYzh5SThXAainehRSPyzPbnZJlHa6G",
+    "role": "user",
+    "created_at": "2026-04-14T11:34:52.991Z"
+  }
+]
