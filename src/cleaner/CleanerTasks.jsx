@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, Fragment } from "react";
 
 export default function CleanerTasks() {
   const [availableTasks, setAvailableTasks] = useState([
@@ -14,10 +14,7 @@ export default function CleanerTasks() {
       fillLevel: 85,
       deadline: "11:00 AM",
       priority: "HIGH",
-      photos: {
-        top: null,
-        side: null
-      }
+      photos: { top: null, side: null }
     },
     {
       id: "CL206",
@@ -31,43 +28,98 @@ export default function CleanerTasks() {
       fillLevel: 72,
       deadline: "01:00 PM",
       priority: "MEDIUM",
-      photos: {
-        top: null,
-        side: null
-      }
-    },
+      photos: { top: null, side: null }
+    }
   ]);
 
   const [activeTasks, setActiveTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState({});
 
+  useEffect(() => {
+    const reports = JSON.parse(localStorage.getItem("wasteReports") || "[]");
+    
+    // Convert submitted reports to available tasks
+    const reportTasks = reports
+      .filter(report => report.status === 'pending')
+      .map(report => ({
+        id: `CL${Date.now() + Math.random()}`,
+        reportId: report.id,
+        dateTime: report.submittedAt,
+        place: report.department,
+        area: "Campus Area",
+        department: report.department,
+        location: "TBD",
+        bin: report.bin,
+        fillLevel: report.fillLevel,
+        deadline: "2:00 PM",
+        priority: report.fillLevel >= 80 ? "HIGH" : report.fillLevel >= 60 ? "MEDIUM" : "LOW",
+        photos: report.photos || { top: null, side: null }
+      }));
+    
+    setAvailableTasks(prev => [...reportTasks, ...prev]);
+  }, []);
+
   const handleAcceptTask = (task) => {
-    setAvailableTasks(availableTasks.filter(t => t.id !== task.id));
-    setActiveTasks([...activeTasks, task]);
+    setAvailableTasks((prev) => prev.filter((t) => t.id !== task.id));
+    setActiveTasks((prev) => [...prev, task]);
+    
+    // Update report status to in-progress
+    if (task.reportId) {
+      const reports = JSON.parse(localStorage.getItem("wasteReports") || "[]");
+      const updatedReports = reports.map(report => 
+        report.id === task.reportId ? { ...report, status: 'in-progress' } : report
+      );
+      localStorage.setItem('wasteReports', JSON.stringify(updatedReports));
+    }
   };
 
   const handleRejectTask = (task) => {
-    setAvailableTasks(availableTasks.filter(t => t.id !== task.id));
+    setAvailableTasks((prev) => prev.filter((t) => t.id !== task.id));
   };
 
   const handleFileUpload = (taskId, event) => {
     const file = event.target.files[0];
     if (file) {
-      setUploadedFiles({
-        ...uploadedFiles,
+      setUploadedFiles((prev) => ({
+        ...prev,
         [taskId]: file
-      });
+      }));
     }
   };
 
   const handleCompleteTask = (task) => {
-    setActiveTasks(activeTasks.filter(t => t.id !== task.id));
-    setCompletedTasks([...completedTasks, { ...task, completedAt: new Date().toLocaleString() }]);
-    // Clear uploaded file for this task
-    const newUploadedFiles = { ...uploadedFiles };
-    delete newUploadedFiles[task.id];
-    setUploadedFiles(newUploadedFiles);
+    setActiveTasks((prev) => prev.filter((t) => t.id !== task.id));
+    setCompletedTasks((prev) => [
+      ...prev,
+      { ...task, completedAt: new Date().toLocaleString() }
+    ]);
+
+    setUploadedFiles((prev) => {
+      const updated = { ...prev };
+      delete updated[task.id];
+      return updated;
+    });
+    
+    // Update report status to resolved
+    if (task.reportId) {
+      const reports = JSON.parse(localStorage.getItem("wasteReports") || "[]");
+      const updatedReports = reports.map(report => 
+        report.id === task.reportId ? { 
+          ...report, 
+          status: 'resolved', 
+          resolvedAt: new Date().toLocaleString('en-US', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+          })
+        } : report
+      );
+      localStorage.setItem('wasteReports', JSON.stringify(updatedReports));
+    }
   };
 
   return (
@@ -90,49 +142,38 @@ export default function CleanerTasks() {
         </div>
       </div>
 
-      {/* Tasks */}
+      {/* Tasks Section */}
       <div className="grid grid-cols-2 gap-6">
         {/* Available Tasks */}
         <div className="bg-white p-4 rounded-2xl shadow">
           <h2 className="font-semibold mb-3">Available Tasks</h2>
 
           {availableTasks.map((task) => (
-            <div
-              key={task.id}
-              className="border rounded-xl p-3 mb-3"
-            >
-              <div className="flex justify-between items-start mb-3">
+            <div key={task.id} className="border rounded-xl p-3 mb-3">
+              <div className="flex justify-between mb-3">
                 <div>
                   <p className="font-medium">Task #{task.id}</p>
-                  <p className="text-xs text-gray-500">Report #{task.reportId}</p>
+                  <p className="text-xs text-gray-500">
+                    Report #{task.reportId}
+                  </p>
                 </div>
                 <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
                   {task.priority}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3 text-sm">
-                <div>
-                  <span className="text-gray-500">Date & Time:</span>
-                  <div className="font-medium">{task.dateTime}</div>
-                </div>
+              <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                 <div>
                   <span className="text-gray-500">Department:</span>
-                  <div className="font-medium">{task.department}</div>
-                </div>
-                <div>
-                  <span className="text-gray-500">Location:</span>
-                  <div className="font-medium text-xs">{task.location}</div>
+                  <div>{task.department}</div>
                 </div>
                 <div>
                   <span className="text-gray-500">Bin:</span>
-                  <div className="font-medium">{task.bin}</div>
+                  <div>{task.bin}</div>
                 </div>
                 <div>
-                  <span className="text-gray-500">Fill Level:</span>
-                  <div className={`font-bold ${task.fillLevel >= 80 ? 'text-red-600' : task.fillLevel >= 60 ? 'text-yellow-600' : 'text-green-600'}`}>
-                    {task.fillLevel}%
-                  </div>
+                  <span className="text-gray-500">Fill:</span>
+                  <div>{task.fillLevel}%</div>
                 </div>
                 <div>
                   <span className="text-gray-500">Deadline:</span>
@@ -140,73 +181,57 @@ export default function CleanerTasks() {
                 </div>
               </div>
 
-              {/* Photos Section */}
-              <div className="mb-3">
-                <p className="text-sm text-gray-500 mb-2">Photos:</p>
-                <div className="flex gap-2">
-                  <div className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                    <span className="text-xs text-gray-400 text-center">Top view</span>
-                  </div>
-                  <div className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                    <span className="text-xs text-gray-400 text-center">Side view</span>
-                  </div>
-                </div>
-              </div>
-
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={() => handleAcceptTask(task)}
-                  className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-2 rounded-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
+                  className="flex-1 bg-teal-600 text-white py-2 rounded-lg"
                 >
-                  Accept Task
+                  Accept
                 </button>
-                <button 
+                <button
                   onClick={() => handleRejectTask(task)}
-                  className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white py-2 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200"
+                  className="flex-1 bg-red-600 text-white py-2 rounded-lg"
                 >
-                  Reject Task
+                  Reject
                 </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Active Task */}
+        {/* Active Tasks */}
         <div className="bg-white p-4 rounded-2xl shadow">
           <h2 className="font-semibold mb-3">My Active Tasks</h2>
 
           {activeTasks.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <p>No active tasks</p>
-              <p className="text-sm">Accepted tasks will appear here</p>
-            </div>
+            <p className="text-gray-500">No active tasks</p>
           ) : (
             activeTasks.map((task) => (
-              <div key={task.id} className="border rounded-xl p-4 mb-3 bg-green-50">
-                <div className="flex justify-between items-start mb-3">
+              <div key={task.id} className="border rounded-xl p-3 mb-3">
+                <div className="flex justify-between mb-3">
                   <div>
                     <p className="font-medium">Task #{task.id}</p>
-                    <p className="text-xs text-gray-500">Report #{task.reportId}</p>
+                    <p className="text-xs text-gray-500">
+                      Report #{task.reportId}
+                    </p>
                   </div>
-                  <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">
-                    ACTIVE
+                  <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
+                    {task.priority}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3 text-sm">
+                <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                   <div>
                     <span className="text-gray-500">Department:</span>
-                    <div className="font-medium">{task.department}</div>
+                    <div>{task.department}</div>
                   </div>
                   <div>
                     <span className="text-gray-500">Bin:</span>
-                    <div className="font-medium">{task.bin}</div>
+                    <div>{task.bin}</div>
                   </div>
                   <div>
-                    <span className="text-gray-500">Fill Level:</span>
-                    <div className={`font-bold ${task.fillLevel >= 80 ? 'text-red-600' : task.fillLevel >= 60 ? 'text-yellow-600' : 'text-green-600'}`}>
-                      {task.fillLevel}%
-                    </div>
+                    <span className="text-gray-500">Fill:</span>
+                    <div>{task.fillLevel}%</div>
                   </div>
                   <div>
                     <span className="text-gray-500">Deadline:</span>
@@ -214,34 +239,12 @@ export default function CleanerTasks() {
                   </div>
                 </div>
 
-                <div>
-                  <input
-                    type="file"
-                    id={`file-upload-${task.id}`}
-                    accept="image/*,.pdf,.doc,.docx"
-                    onChange={(e) => handleFileUpload(task.id, e)}
-                    className="hidden"
-                  />
-                  <label 
-                    htmlFor={`file-upload-${task.id}`}
-                    className="block w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-2 rounded-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200 text-center cursor-pointer font-medium"
-                  >
-                    {uploadedFiles[task.id] ? 'File Uploaded' : 'Upload Completion Proof'}
-                  </label>
-                  {uploadedFiles[task.id] && (
-                    <p className="text-xs text-green-600 mt-1">
-                      &#10004; {uploadedFiles[task.id].name}
-                    </p>
-                  )}
-                  {uploadedFiles[task.id] && (
-                    <button
-                      onClick={() => handleCompleteTask(task)}
-                      className="w-full mt-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-2 rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 font-medium"
-                    >
-                      Complete Task
-                    </button>
-                  )}
-                </div>
+                <button
+                  onClick={() => handleCompleteTask(task)}
+                  className="w-full bg-teal-600 text-white py-2 rounded-lg"
+                >
+                  Complete Task
+                </button>
               </div>
             ))
           )}

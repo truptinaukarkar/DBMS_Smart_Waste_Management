@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [role, setRole] = useState("Student");
+  const [role, setRole] = useState("User");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,9 +22,20 @@ export default function Login() {
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Please enter a valid email address";
+    } else if (role === "User") {
+      // VJTI email validation for User role only
+      const vjtiRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*vjti\.ac\.in$/;
+      if (!vjtiRegex.test(email)) {
+        newErrors.email = "Only VJTI emails are allowed (example@vjti.ac.in)";
+      }
+    } else if (role === "Cleaner") {
+      // Basic email validation for Cleaner role
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        newErrors.email = "Please enter a valid email address";
+      }
     }
+    
 
     if (!password) {
       newErrors.password = "Password is required";
@@ -44,15 +55,14 @@ export default function Login() {
     localStorage.setItem("userName", name);
     localStorage.setItem("userEmail", email);
 
-    const rolePath = role === "Cleaner" ? "/cleaner" : "/student";
+    const rolePath = role === "Cleaner" ? "/cleaner" : "/user";
     navigate(rolePath, { replace: true });
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-green-100 px-4">
 
-      {/* Logo */}
-      <div className="mb-6 flex flex-col items-center">
+      <div className="mb-6 flex flex-col items-center mt-7">
         <h1 className="text-3xl font-bold text-gray-900">
           Smart Waste Monitor
         </h1>
@@ -74,7 +84,7 @@ export default function Login() {
 
         {/* Role Selector */}
         <div className="flex bg-gray-100 rounded-full p-1 mb-6">
-          {["Student", "Cleaner"].map((r) => (
+          {["User", "Cleaner"].map((r) => (
             <button
               type="button"
               key={r}
@@ -110,8 +120,8 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={
-              role === "Student"
-                ? "student@university.edu"
+              role === "User"
+                ? "your.email@vjti.ac.in"
                 : role === "Cleaner"
                 ? "cleaner@clean.com"
                 : "user@example.com"
@@ -154,7 +164,7 @@ export default function Login() {
           Login as {role}
         </button>
 
-        {role === "Student" && (
+        {role === "User" && (
           <p className="text-center mt-6 text-gray-500">
             Don’t have an account?{" "}
             <Link to="/register" className="text-teal-600 font-medium">

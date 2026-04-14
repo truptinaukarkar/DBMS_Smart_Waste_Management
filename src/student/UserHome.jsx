@@ -1,4 +1,4 @@
-export default function StudentHome() {
+export default function UserHome() {
 
   return (
     <div className="space-y-6">

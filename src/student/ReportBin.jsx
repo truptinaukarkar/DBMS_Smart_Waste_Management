@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CampusMap from "../components/CampusMap";
 
 export default function ReportBin() {
     const navigate = useNavigate();
     const [department, setDepartment] = useState("");
     const [bin, setBin] = useState("");
     const [fill, setFill] = useState(50);
-    const [location, setLocation] = useState(null);
-    const [photos, setPhotos] = useState({
+        const [photos, setPhotos] = useState({
         top: null,
         side: null,
     });
@@ -29,7 +27,6 @@ export default function ReportBin() {
             id: `RPT${Date.now()}`,
             department,
             bin,
-            location: location ? `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}` : "Unknown",
             fillLevel: fill,
             status: "pending",
             submittedAt: new Date().toLocaleString('en-US', { 
@@ -47,11 +44,16 @@ export default function ReportBin() {
             }
         };
 
-        const existingReports = JSON.parse(localStorage.getItem('wasteReports') || '[]');
-        existingReports.unshift(newReport);
-        localStorage.setItem('wasteReports', JSON.stringify(existingReports));
+        try {
+            const existingReports = JSON.parse(localStorage.getItem('wasteReports') || '[]');
+            existingReports.unshift(newReport);
+            localStorage.setItem('wasteReports', JSON.stringify(existingReports));
 
-        navigate('/student/reports');
+            navigate('/user/reports');
+        } catch (error) {
+            console.error('Error saving report:', error);
+            alert('There was an error submitting your report. Please try again.');
+        }
     };
 
     return (
@@ -99,43 +101,14 @@ export default function ReportBin() {
                 ))}
             </div>
 
-            {/* Map */}
-            {/* Map Selection */}
-            <div className="mb-6">
-                <label className="font-medium">
-                    3. Select Bin Location <span className="text-red-500">*</span>
-                </label>
-
-                <p className="text-sm text-gray-500 mb-3">
-                    Click on the map to pin the dustbin location
-                </p>
-
-                <CampusMap
-                    selectedLocation={location}
-                    onLocationSelect={setLocation}
-                />
-
-                {location && (
-                    <p className="mt-3 text-sm text-gray-600">
-                        Selected Location:
-                        <span className="font-medium ml-1">
-                            {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
-                        </span>
-                    </p>
-                )}
-            </div>
+            
 
             {/* Department & Bin */}
-            <div>
-                <h2 className="text-lg font-semibold">Select Department and Bin</h2>
-                <p className="text-gray-500 mb-6">
-                    Choose the department and bin you want to report
-                </p>
-
+            <div>               
                 {/* Department */}
                 <div className="mb-4">
                     <label className="font-medium">
-                        4. Select Department <span className="text-red-500">*</span>
+                        3. Select Department <span className="text-red-500">*</span>
                     </label>
                     <select
                         value={department}
@@ -160,7 +133,7 @@ export default function ReportBin() {
                 {/* Bin */}
                 <div className="mb-6">
                     <label className="font-medium">
-                        5. Select Bin <span className="text-red-500">*</span>
+                        4. Select Bin <span className="text-red-500">*</span>
                     </label>
                     <select
                         value={bin}
@@ -188,7 +161,7 @@ export default function ReportBin() {
                 {/* Fill Level */}
                 <div>
                     <label className="font-medium">
-                        6. Estimate Fill Level <span className="text-red-500">*</span>
+                        5. Estimate Fill Level <span className="text-red-500">*</span>
                     </label>
 
                     <input
@@ -217,13 +190,13 @@ export default function ReportBin() {
 
             {/* Submit */}
             <button
+                type="submit"
                 onClick={handleSubmit}
                 disabled={
                     !photos.top ||
                     !photos.side ||
                     !department ||
-                    !bin ||
-                    !location
+                    !bin
                 }
                 className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg disabled:opacity-50 hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
             >

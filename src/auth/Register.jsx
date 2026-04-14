@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -12,13 +13,13 @@ export default function Register() {
     const newErrors = {};
 
     // VJTI email validation
-    const vjtiRegex = /^[a-zA-Z0-9._%+-]+@it\.vjti\.ac\.in$/;
+    const vjtiRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*vjti\.ac\.in$/;
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
     } else if (!vjtiRegex.test(email)) {
       newErrors.email =
-        "Only VJTI emails are allowed (example@it.vjti.ac.in)";
+        "Only VJTI emails are allowed (example@vjti.ac.in)";
     }
 
     if (!password) {
@@ -41,34 +42,47 @@ export default function Register() {
     e.preventDefault();
     if (!validate()) return;
 
-    localStorage.setItem("role", "Student");
-    navigate("/student", { replace: true });
+    localStorage.setItem("role", "User");
+    navigate("/user", { replace: true });
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-green-100 px-4">
 
       {/* Logo */}
-      <div className="mb-6 flex flex-col items-center">
+      <div className="mb-6 flex flex-col items-center mt-7">
         <h1 className="text-3xl font-bold text-green-800">
           Smart Waste Monitor
         </h1>
         <p className="text-green-700 mt-1">
-          Create your student account
+          Create your User account
         </p>
       </div>
 
+      
       {/* Card */}
       <form
         noValidate
         onSubmit={handleRegister}
         className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8"
       >
-        <h2 className="text-xl font-semibold">Create Student Account</h2>
+        <h2 className="text-xl font-semibold">Create User Account</h2>
         <p className="text-gray-500 mb-6">
           Only VJTI students are allowed to register
         </p>
 
+        {/* Name */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Full Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your full name"
+            className="w-full px-4 py-3 rounded-xl bg-gray-100 outline-none border border-transparent focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
+        
         {/* Email */}
         <div className="mb-4">
           <label className="block font-medium mb-1">VJTI Email</label>
@@ -131,7 +145,7 @@ export default function Register() {
           type="submit"
           className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg hover:from-teal-700 hover:to-emerald-700 transition-all duration-200"
         >
-          Register as Student
+          Register as User
         </button>
 
         {/* Back to login */}

@@ -5,23 +5,22 @@ import Home from "./Home";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 
-// Student
-import StudentLayout from "./student/StudentLayout";
-import StudentHome from "./student/StudentHome";
+// User
+import UserLayout from "./student/UserLayout";
+import UserHome from "./student/UserHome";
 import ReportBin from "./student/ReportBin";
 import MyReports from "./student/MyReports";
 
 // Cleaner
 import CleanerLayout from "./cleaner/CleanerLayout";
 import CleanerTasks from "./cleaner/CleanerTasks";
-import CleanerMap from "./cleaner/CleanerMap";
 import CleanerSchedule from "./cleaner/CleanerSchedule";
 
 function DashboardRedirect() {
   const role = (localStorage.getItem("role") || "").toLowerCase();
 
   if (role === "cleaner") return <Navigate to="/cleaner" replace />;
-  return <Navigate to="/student" replace />;
+  return <Navigate to="/user" replace />;
 }
 
 function App() {
@@ -34,9 +33,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<DashboardRedirect />} />
 
-        {/* ================= STUDENT ================= */}
-        <Route path="/student" element={<StudentLayout />}>
-          <Route index element={<StudentHome />} />
+        {/* ================= USER ================= */}
+        <Route path="/user" element={<UserLayout />}>
+          <Route index element={<UserHome />} />
           <Route path="report" element={<ReportBin />} />
           <Route path="reports" element={<MyReports />} />
         </Route>
@@ -44,7 +43,6 @@ function App() {
         {/* ================= CLEANER ================= */}
         <Route path="/cleaner" element={<CleanerLayout />}>
           <Route index element={<CleanerTasks />} />
-          <Route path="map" element={<CleanerMap />} />
           <Route path="schedule" element={<CleanerSchedule />} />
         </Route>
 
