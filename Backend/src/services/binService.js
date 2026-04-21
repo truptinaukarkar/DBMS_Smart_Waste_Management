@@ -1,14 +1,12 @@
 import supabase from '../config/supabaseClient.js';
 
-export const createBin = async (location, latitude, longitude, capacity) => {
+export const createBin = async (location, capacity) => {
   try {
     const { data, error } = await supabase
       .from('bins')
       .insert([
         {
           location,
-          latitude,
-          longitude,
           capacity,
           current_fill: 0,
           status: 'active',
