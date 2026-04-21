@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 
 export default function CleanerTasks() {
-  const [availableTasks, setAvailableTasks] = useState([
+  const [activeTasks, setActiveTasks] = useState([
     {
       id: "CL204",
       reportId: "RPT1775901938955",
@@ -32,7 +32,6 @@ export default function CleanerTasks() {
     }
   ]);
 
-  const [activeTasks, setActiveTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState({});
 
@@ -57,26 +56,8 @@ export default function CleanerTasks() {
         photos: report.photos || { top: null, side: null }
       }));
     
-    setAvailableTasks(prev => [...reportTasks, ...prev]);
+    setActiveTasks(prev => [...reportTasks, ...prev]);
   }, []);
-
-  const handleAcceptTask = (task) => {
-    setAvailableTasks((prev) => prev.filter((t) => t.id !== task.id));
-    setActiveTasks((prev) => [...prev, task]);
-    
-    // Update report status to in-progress
-    if (task.reportId) {
-      const reports = JSON.parse(localStorage.getItem("wasteReports") || "[]");
-      const updatedReports = reports.map(report => 
-        report.id === task.reportId ? { ...report, status: 'in-progress' } : report
-      );
-      localStorage.setItem('wasteReports', JSON.stringify(updatedReports));
-    }
-  };
-
-  const handleRejectTask = (task) => {
-    setAvailableTasks((prev) => prev.filter((t) => t.id !== task.id));
-  };
 
   const handleFileUpload = (taskId, event) => {
     const file = event.target.files[0];
@@ -144,60 +125,6 @@ export default function CleanerTasks() {
 
       {/* Tasks Section */}
       <div className="grid grid-cols-2 gap-6">
-        {/* Available Tasks */}
-        <div className="bg-white p-4 rounded-2xl shadow">
-          <h2 className="font-semibold mb-3">Available Tasks</h2>
-
-          {availableTasks.map((task) => (
-            <div key={task.id} className="border rounded-xl p-3 mb-3">
-              <div className="flex justify-between mb-3">
-                <div>
-                  <p className="font-medium">Task #{task.id}</p>
-                  <p className="text-xs text-gray-500">
-                    Report #{task.reportId}
-                  </p>
-                </div>
-                <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
-                  {task.priority}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                <div>
-                  <span className="text-gray-500">Department:</span>
-                  <div>{task.department}</div>
-                </div>
-                <div>
-                  <span className="text-gray-500">Bin:</span>
-                  <div>{task.bin}</div>
-                </div>
-                <div>
-                  <span className="text-gray-500">Fill:</span>
-                  <div>{task.fillLevel}%</div>
-                </div>
-                <div>
-                  <span className="text-gray-500">Deadline:</span>
-                  <div className="text-red-600">{task.deadline}</div>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleAcceptTask(task)}
-                  className="flex-1 bg-teal-600 text-white py-2 rounded-lg"
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={() => handleRejectTask(task)}
-                  className="flex-1 bg-red-600 text-white py-2 rounded-lg"
-                >
-                  Reject
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
 
         {/* Active Tasks */}
         <div className="bg-white p-4 rounded-2xl shadow">
